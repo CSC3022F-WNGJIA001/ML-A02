@@ -133,19 +133,19 @@ def value_iteration(prev_record):
                 pols = []
                 r = row - 1 # UP
                 if r >= 0 and r < height:
-                    values.append(rewards[r][column]+g*prev_record[r][column])
+                    values.append(rewards[row][column]+g*prev_record[r][column])
                     pols.append((column, r))
                 r = row + 1 # DOWN
                 if r >= 0 and r < height:
-                    values.append(rewards[r][column]+g*prev_record[r][column])
+                    values.append(rewards[row][column]+g*prev_record[r][column])
                     pols.append((column, r))
                 c = column - 1 # LEFT
                 if c >= 0 and c < width:
-                    values.append(rewards[row][c]+g*prev_record[row][c])
+                    values.append(rewards[row][column]+g*prev_record[row][c])
                     pols.append((c, row))
                 c = column + 1 # RIGHT
                 if c >= 0 and c < width:
-                    values.append(rewards[row][c]+g*prev_record[row][c])
+                    values.append(rewards[row][column]+g*prev_record[row][c])
                     pols.append((c, row))
                 # find max value and policy/next state
                 max_value = max(values)
@@ -171,9 +171,8 @@ def setReards():
     set rewards function:
     set the reward function for all states
     """
-    # set up rewards for all states: end_state=100, landmine=-100, else=-1
+    # set up rewards for all states: end_state=100, landmine=-100, else=0
     rewards = np.zeros((height, width))
-    # rewards.fill(-1)
     rewards[end_state[1]][end_state[0]] = 100
     for mine in mines:
         rewards[mine[1]][mine[0]] = -100
@@ -199,8 +198,8 @@ if __name__=='__main__':
         prev_record = record # if not records else records[-1]
         policy, record = value_iteration(prev_record)
         records.append(record.tolist())
-    # print(np.round(records, 1))
-    print(np.round(records[-1], 1))
-    print(policy)
     opt_pol = getOptimalPolicy()
-    print(opt_pol)
+    # generate animation
+    anim = generateAnimat(np.round(records, 1), start_state, end_state, mines=mines, opt_pol=opt_pol,
+        start_val=-10, end_val=100, mine_val=150, just_vals=False, generate_gif=True)
+    plt.show()
