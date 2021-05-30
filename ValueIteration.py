@@ -25,6 +25,10 @@ k = 0
 g = 0.0
 
 def parseCommandLine():
+    """
+    parse command line function:
+    parse command line flags and arguments into variables
+    """
     global mines, width, height, start_state, end_state, k, g
     # set command line options
     parser = argparse.ArgumentParser(description='Performs value iteration.')
@@ -74,22 +78,45 @@ def parseCommandLine():
 
 # helper functions to check if the parsed values are valid
 def check_size(i):
+    """
+    check size funtion:
+    check if the parsed value is a valid int value for width or height
+    width and height should be greater than 1 in order to
+    generate a meaningful environment
+    """
     value = int(i)
     if value <= 1:
         raise argparse.ArgumentTypeError("invalid size value: '%s', should be greater than 1" % i)
     return value
 def positive_int(i):
+    """
+    check positive integer function:
+    check if the parsed value is a valid positive int value
+    xpos , ypos and k should be integers greater than or equal to 0
+    """
     value = int(i)
     if value < 0:
         raise argparse.ArgumentTypeError("invalid positive int number: '%s'" % i)
     return value
 def check_gamma(i):
+    """
+    check gamma function:
+    check if the parsed value is a valid value between 0 and 1
+    the discount factor gamma should fall between 0 and 1
+    """
     value = float(i)
     if value < 0.0 or value > 1.0:
         raise argparse.ArgumentTypeError("invalid gamma value: '%s', should be between 0 and 1" % i)
     return value
 
 def value_iteration(prev_record):
+    """
+    value iteration algorithm:
+        input: record of values from previous iteration
+        output: approximately optimal policy and value function for current iteration
+    for each state, find the max value in taking any action in the four directions
+    the value function and approximately optimal policy is returned
+    """
     policy = []
     record = np.zeros((height, width))
     prev_state = start_state
@@ -127,8 +154,23 @@ def value_iteration(prev_record):
         policy.append(pol)
     return policy, record
 
+def getOptimalPolicy():
+    """
+    get optimal policy function:
+    iterate through policy function to find the optimal policy
+    """
+    opt_pol = [start_state]
+    pol = start_state
+    while not pol == end_state:
+        pol = policy[pol[1]][pol[0]]
+        opt_pol.append(pol)
+    return opt_pol
 
 def setReards():
+    """
+    set rewards function:
+    set the reward function for all states
+    """
     # set up rewards for all states: end_state=100, landmine=-100, else=-1
     rewards = np.zeros((height, width))
     # rewards.fill(-1)
@@ -138,6 +180,10 @@ def setReards():
     return rewards
 
 def convergence():
+    """
+    convergence function:
+    check if the value iteration has converged
+    """
     if len(records) >= 2 and records[-2] == records[-1]:
         return True
     return False
