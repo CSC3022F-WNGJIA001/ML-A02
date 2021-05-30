@@ -35,8 +35,6 @@ def parseCommandLine():
     parser.add_argument('--k', '-k', default=3, type=positive_int, metavar='k', help='number of landmines')
     parser.add_argument('--gamma', '-gamma', default=0.8, type=check_gamma, metavar='g', help='discount factor')
     args = parser.parse_args()
-    print(args)
-
     # assign argument values to variables
     width = args.width
     height = args.height
@@ -91,6 +89,22 @@ def check_gamma(i):
         raise argparse.ArgumentTypeError("invalid gamma value: '%s', should be between 0 and 1" % i)
     return value
 
+
+
+def setReards():
+    # set up rewards for all states: end_state=100, landmine=-100, else=-1
+    rewards = np.zeros((height, width))
+    # rewards.fill(-1)
+    rewards[end_state[1]][end_state[0]] = 100
+    for mine in mines:
+        rewards[mine[1]][mine[0]] = -100
+    return rewards
+
+def convergence():
+    if len(records) >= 2 and records[-2] == records[-1]:
+        return True
+    return False
+
 if __name__=='__main__':
     parseCommandLine()
     # set up rewards
@@ -101,4 +115,9 @@ if __name__=='__main__':
     while not convergence():
         prev_record = record # if not records else records[-1]
         policy, record = value_iteration(prev_record)
-        records.append(record)
+        records.append(record.tolist())
+    # print(np.round(records, 1))
+    print(np.round(records[-1], 1))
+    print(policy)
+    opt_pol = getOptimalPolicy()
+    print(opt_pol)
