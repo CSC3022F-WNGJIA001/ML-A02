@@ -89,6 +89,43 @@ def check_gamma(i):
         raise argparse.ArgumentTypeError("invalid gamma value: '%s', should be between 0 and 1" % i)
     return value
 
+def value_iteration(prev_record):
+    policy = []
+    record = np.zeros((height, width))
+    prev_state = start_state
+    for row in range(height):
+        pol = [] # a row of the policy matrix
+        for column in range(width):
+            # for each state, if terminal state: keep as reward value
+            # else: find the max value for taking actions in any of 4 directions
+            if (column, row) in mines or (column, row) == end_state:
+                record[row][column] = rewards[row][column]
+                pol.append((row, column))
+            else:
+                values = []
+                pols = []
+                r = row - 1 # UP
+                if r >= 0 and r < height:
+                    values.append(rewards[r][column]+g*prev_record[r][column])
+                    pols.append((column, r))
+                r = row + 1 # DOWN
+                if r >= 0 and r < height:
+                    values.append(rewards[r][column]+g*prev_record[r][column])
+                    pols.append((column, r))
+                c = column - 1 # LEFT
+                if c >= 0 and c < width:
+                    values.append(rewards[row][c]+g*prev_record[row][c])
+                    pols.append((c, row))
+                c = column + 1 # RIGHT
+                if c >= 0 and c < width:
+                    values.append(rewards[row][c]+g*prev_record[row][c])
+                    pols.append((c, row))
+                # find max value and policy/next state
+                max_value = max(values)
+                record[row][column] = max_value
+                pol.append(pols[np.argmax(values)])
+        policy.append(pol)
+    return policy, record
 
 
 def setReards():
