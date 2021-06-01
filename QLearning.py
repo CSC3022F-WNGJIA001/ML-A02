@@ -43,7 +43,7 @@ def parseCommandLine():
     parser.add_argument('-end','--end',  nargs=2, type=positive_int, metavar=('xpos', 'ypos'), help='target destination of the agent')
     parser.add_argument('-k', '--k', default=3, type=positive_int, metavar='k', help='number of landmines')
     parser.add_argument('-gamma', '--gamma', default=0.8, type=check_gamma, metavar='g', help='discount factor')
-    parser.add_argument('-eta', '--eta', type=check_gamma, metavar='l', help='learning rate')
+    parser.add_argument('-learning', '--learning', type=check_gamma, metavar='l', help='learning rate')
     parser.add_argument('-epochs', '--epochs', default=500, type=positive_int, metavar='e', help='number of episodes the agent should learn for')
     args = parser.parse_args()
     # assign argument values to variables
@@ -80,8 +80,8 @@ def parseCommandLine():
         sys.exit("invalid k value: '%s', should not exceed (width*height-2) = %s" % (k, width*height-2))
     # assign discount factor gamma
     g = args.gamma
-    if not args.eta == None:
-        l = args.eta
+    if not args.learning == None:
+        l = args.learning
     e = args.epochs
 
 # helper functions to check if the parsed values are valid

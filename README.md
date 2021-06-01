@@ -59,6 +59,6 @@ Available options:  -start xpos ypos: starting state, random if not given
 
                     -gamma g: discount factor, 0.8 by default
 
-                    -eta l: learning rate, decaying learning rate if not given
+                    -learning l: learning rate, decaying learning rate if not given
 
                     -epochs e: number of epochs the agent will learn for, 500 by default
