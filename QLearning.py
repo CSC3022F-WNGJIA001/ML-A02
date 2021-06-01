@@ -10,6 +10,7 @@ import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 from Animate import generateAnimat
+from Helper import getOptPol
 
 # global variables
 Q_values = [] # Q matrix of each epoch
@@ -116,7 +117,6 @@ def check_gamma(i):
         raise argparse.ArgumentTypeError("invalid gamma value: '%s', should be between 0 and 1" % i)
     return value
 
-
 def initialise():
     """
     set rewards function:
@@ -171,12 +171,10 @@ def qLearning(prev_Q):
             lrt = 1/(1+visits[curr_row*width+curr_column][action]) # decaying learning rate
         else:
             lrt = l # use user defined learning rate
-        print(lrt)
         old_value = prev_Q[curr_row][curr_column]
         curr_Q[curr_row][curr_column] = old_value+lrt*(rewards[next_row][next_column]+g*max_value-old_value)
         curr_state = next_state
     return curr_Q
-
 
 def doRandomAction(c_state):
     """
@@ -211,10 +209,8 @@ def doRandomAction(c_state):
                 break
     return n_state, direction
 
-
 if __name__=='__main__':
     parseCommandLine()
-    print('w: ', width, ', h: ', height, ', s: ', start_state, ', e: ', end_state, ', k: ', k, ', g: ', g, ', e: ', e)
     # initialise
     rewards, visits, record = initialise()
     # loop through the number of epochs
@@ -222,5 +218,16 @@ if __name__=='__main__':
         prev_record = record # if not records else records[-1]
         record = qLearning(prev_record)
         Q_values.append(record.tolist())
-    print(np.array(Q_values))
     # get optimal policy
+    opt_pol = getOptPol(Q_values[-1], start_state, end_state)
+    # generate animation
+    # reduce the number records if too many epochs
+    if e < 60:
+        records = np.round(Q_values, 1)
+    else:
+        ratio = int(e/60)
+        for i in range(0, e, ratio):
+            records.append(np.round(Q_values[i], 1))
+    anim = generateAnimat(records, start_state, end_state, mines=mines, opt_pol=opt_pol,
+        start_val=-10, end_val=100, mine_val=150, just_vals=False, generate_gif=True)
+    plt.show()

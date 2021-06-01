@@ -9,6 +9,7 @@ import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 from Animate import generateAnimat
+from Helper import getOptPol
 
 # global variables
 records = []
@@ -154,19 +155,7 @@ def value_iteration(prev_record):
         policy.append(pol)
     return policy, record
 
-def getOptimalPolicy():
-    """
-    get optimal policy function:
-    iterate through policy function to find the optimal policy
-    """
-    opt_pol = [start_state]
-    pol = start_state
-    while not pol == end_state:
-        pol = policy[pol[1]][pol[0]]
-        opt_pol.append(pol)
-    return opt_pol
-
-def setReards():
+def setRewards():
     """
     set rewards function:
     set the reward function for all states
@@ -190,7 +179,7 @@ def convergence():
 if __name__=='__main__':
     parseCommandLine()
     # set up rewards
-    rewards = setReards()
+    rewards = setRewards()
     # initialise value function = 0 for all states
     record = np.zeros((height, width))
     # iterate while not convergence
@@ -198,7 +187,7 @@ if __name__=='__main__':
         prev_record = record # if not records else records[-1]
         policy, record = value_iteration(prev_record)
         records.append(record.tolist())
-    opt_pol = getOptimalPolicy()
+    opt_pol = getOptPol(records[-1], start_state, end_state)
     # generate animation
     anim = generateAnimat(np.round(records, 1), start_state, end_state, mines=mines, opt_pol=opt_pol,
         start_val=-10, end_val=100, mine_val=150, just_vals=False, generate_gif=True)
