@@ -61,4 +61,4 @@ Available options:  -start xpos ypos: starting state, random if not given
 
                     -eta l: learning rate, decaying learning rate if not given
 
-                    -epochs e: number of epochs the agent will learn for, 100 by default
+                    -epochs e: number of epochs the agent will learn for, 500 by default

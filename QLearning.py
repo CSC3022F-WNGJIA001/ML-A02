@@ -44,7 +44,7 @@ def parseCommandLine():
     parser.add_argument('-k', '--k', default=3, type=positive_int, metavar='k', help='number of landmines')
     parser.add_argument('-gamma', '--gamma', default=0.8, type=check_gamma, metavar='g', help='discount factor')
     parser.add_argument('-eta', '--eta', type=check_gamma, metavar='l', help='learning rate')
-    parser.add_argument('-epochs', '--epochs', default=100, type=positive_int, metavar='e', help='number of episodes the agent should learn for')
+    parser.add_argument('-epochs', '--epochs', default=500, type=positive_int, metavar='e', help='number of episodes the agent should learn for')
     args = parser.parse_args()
     # assign argument values to variables
     width = args.width
